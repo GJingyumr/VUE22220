@@ -11,7 +11,12 @@
           <h1>欢迎回来</h1>
           <p>---------- 账号密码登录 ----------</p>
           <div>
-            <el-form status-icon :rules="rules" :model="loginForm">
+            <el-form
+              status-icon
+              ref="LoginForm"
+              :rules="rules"
+              :model="loginForm"
+            >
               <el-form-item prop="username">
                 <el-input
                   v-model.trim="loginForm.username"
@@ -27,7 +32,7 @@
                 ></el-input>
               </el-form-item>
               <el-form-item>
-                <el-button>登录</el-button>
+                <el-button @click="handleLoginSubmit">登录</el-button>
               </el-form-item>
             </el-form>
           </div>
@@ -38,14 +43,33 @@
 </template>
 
 <script setup>
-import { reactive } from 'vue'
+import { reactive, ref } from 'vue'
+import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
+import { ElNotification } from 'element-plus'
+const router = useRouter()
+const store = useStore()
+const LoginForm = ref(null)
 const loginForm = reactive({
-  username: '',
-  password: ''
+  username: 'admin',
+  password: 'admin'
 })
 const rules = {
   username: [{ required: true, message: '请输入账号', trigger: 'blur' }],
   password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
+}
+const handleLoginSubmit = async () => {
+  LoginForm.value.validate(async (valid) => {
+    if (!valid) return
+    await store.dispatch('user/login', loginForm)
+    await store.dispatch('user/userInfo')
+    router.push('/')
+    ElNotification({
+      title: '提示',
+      message: '登录成功!!!',
+      type: 'success'
+    })
+  })
 }
 </script>
 <style scoped lang="scss">
