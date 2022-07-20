@@ -5,12 +5,14 @@
       <span>积云编程</span>
     </div>
     <div class="title_right">
-      <div>
-        <el-icon class="icon"><Fold /></el-icon>
-        <el-icon class="icon"><Refresh /></el-icon>
+      <div classs="isboicon">
+        <el-icon @click="handleCollapseMenu" class="icon"><Fold /></el-icon>
+        <el-icon class="icon" @click="loctionrel"><Refresh /></el-icon>
       </div>
       <div class="bc">
-        <el-icon class="icons"><FullScreen /></el-icon>
+        <el-icon class="icons" @click="toggleFullscreen"
+          ><FullScreen
+        /></el-icon>
         <el-avatar
           class="avatar"
           src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
@@ -38,6 +40,7 @@
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import { ElNotification } from 'element-plus'
+import screenfull from 'screenfull'
 const router = useRouter()
 const store = useStore()
 const handlelogOut = (command) => {
@@ -50,7 +53,9 @@ const handlelogOut = (command) => {
       break
   }
 }
-
+const handleCollapseMenu = () => {
+  store.dispatch('menu/setCollapse')
+}
 const handleToProfile = () => {
   console.log('profile')
 }
@@ -63,6 +68,15 @@ const handleTologout = async () => {
     message: '退出成功!!!',
     type: 'success'
   })
+}
+const toggleFullscreen = () => {
+  if (!screenfull.isEnabled) {
+    return false
+  }
+  screenfull.request()
+}
+const loctionrel = () => {
+  location.reload()
 }
 </script>
 <style scoped lang="scss">
